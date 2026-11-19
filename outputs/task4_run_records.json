@@ -1,0 +1,62 @@
+[
+  {
+    "scenario": "success",
+    "run_id": "RUN-CA99C04944",
+    "shipment_id": "SHIP-4101",
+    "status": "completed",
+    "attempts": 1,
+    "provider_calls": 1,
+    "idempotency_key": "shipping-label:SHIP-4101",
+    "label_id": "LABEL-SHIP-4101",
+    "error_type": null,
+    "latency_ms": 0.229,
+    "started_at": "2026-11-19T06:24:08.891431+00:00",
+    "completed_at": "2026-11-19T06:24:08.891685+00:00",
+    "total_backoff_seconds": 0.0
+  },
+  {
+    "scenario": "retry_then_success",
+    "run_id": "RUN-D4E513CE26",
+    "shipment_id": "SHIP-4102",
+    "status": "completed",
+    "attempts": 2,
+    "provider_calls": 2,
+    "idempotency_key": "shipping-label:SHIP-4102",
+    "label_id": "LABEL-SHIP-4102",
+    "error_type": null,
+    "latency_ms": 0.241,
+    "started_at": "2026-11-19T06:24:08.891708+00:00",
+    "completed_at": "2026-11-19T06:24:08.891954+00:00",
+    "total_backoff_seconds": 0.0
+  },
+  {
+    "scenario": "permanent_failure",
+    "run_id": "RUN-1C5E47A92E",
+    "shipment_id": "SHIP-4103",
+    "status": "needs_review",
+    "attempts": 1,
+    "provider_calls": 1,
+    "idempotency_key": "shipping-label:SHIP-4103",
+    "label_id": null,
+    "error_type": "PermanentError",
+    "latency_ms": 0.146,
+    "started_at": "2026-11-19T06:24:08.891974+00:00",
+    "completed_at": "2026-11-19T06:24:08.892124+00:00",
+    "total_backoff_seconds": 0.0
+  },
+  {
+    "scenario": "replay_safe_success",
+    "run_id": "RUN-49EB590DCE",
+    "shipment_id": "SHIP-4104",
+    "status": "completed",
+    "attempts": 1,
+    "provider_calls": 1,
+    "idempotency_key": "shipping-label:SHIP-4104",
+    "label_id": "LABEL-SHIP-4104",
+    "error_type": null,
+    "latency_ms": 0.117,
+    "started_at": "2026-11-19T06:24:08.892139+00:00",
+    "completed_at": "2026-11-19T06:24:08.892260+00:00",
+    "total_backoff_seconds": 0.0
+  }
+]

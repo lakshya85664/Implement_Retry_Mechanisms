@@ -1,0 +1,140 @@
+[
+  {
+    "trace_id": "TRACE-001",
+    "scenario": "success",
+    "run_id": "RUN-CA99C04944",
+    "shipment_id": "SHIP-4101",
+    "events": [
+      {
+        "timestamp": "2026-11-19T06:24:08.891598+00:00",
+        "component": "fake_shipping_provider",
+        "event": "provider_request_started",
+        "shipment_id": "SHIP-4101",
+        "idempotency_key": "shipping-label:SHIP-4101",
+        "call_number": 1
+      },
+      {
+        "timestamp": "2026-11-19T06:24:08.891627+00:00",
+        "component": "fake_shipping_provider",
+        "event": "provider_request_succeeded",
+        "shipment_id": "SHIP-4101",
+        "idempotency_key": "shipping-label:SHIP-4101",
+        "outcome": "success"
+      }
+    ],
+    "workflow_result": {
+      "status": "completed",
+      "attempts": 1,
+      "error_type": null,
+      "label_id": "LABEL-SHIP-4101"
+    }
+  },
+  {
+    "trace_id": "TRACE-002",
+    "scenario": "retry_then_success",
+    "run_id": "RUN-D4E513CE26",
+    "shipment_id": "SHIP-4102",
+    "events": [
+      {
+        "timestamp": "2026-11-19T06:24:08.891776+00:00",
+        "component": "fake_shipping_provider",
+        "event": "provider_request_started",
+        "shipment_id": "SHIP-4102",
+        "idempotency_key": "shipping-label:SHIP-4102",
+        "call_number": 1
+      },
+      {
+        "timestamp": "2026-11-19T06:24:08.891795+00:00",
+        "component": "fake_shipping_provider",
+        "event": "provider_request_failed",
+        "shipment_id": "SHIP-4102",
+        "idempotency_key": "shipping-label:SHIP-4102",
+        "error_type": "RetryableError",
+        "outcome": "failure"
+      },
+      {
+        "timestamp": "2026-11-19T06:24:08.891880+00:00",
+        "component": "fake_shipping_provider",
+        "event": "provider_request_started",
+        "shipment_id": "SHIP-4102",
+        "idempotency_key": "shipping-label:SHIP-4102",
+        "call_number": 2
+      },
+      {
+        "timestamp": "2026-11-19T06:24:08.891900+00:00",
+        "component": "fake_shipping_provider",
+        "event": "provider_request_succeeded",
+        "shipment_id": "SHIP-4102",
+        "idempotency_key": "shipping-label:SHIP-4102",
+        "outcome": "success"
+      }
+    ],
+    "workflow_result": {
+      "status": "completed",
+      "attempts": 2,
+      "error_type": null,
+      "label_id": "LABEL-SHIP-4102"
+    }
+  },
+  {
+    "trace_id": "TRACE-003",
+    "scenario": "permanent_failure",
+    "run_id": "RUN-1C5E47A92E",
+    "shipment_id": "SHIP-4103",
+    "events": [
+      {
+        "timestamp": "2026-11-19T06:24:08.892038+00:00",
+        "component": "fake_shipping_provider",
+        "event": "provider_request_started",
+        "shipment_id": "SHIP-4103",
+        "idempotency_key": "shipping-label:SHIP-4103",
+        "call_number": 1
+      },
+      {
+        "timestamp": "2026-11-19T06:24:08.892056+00:00",
+        "component": "fake_shipping_provider",
+        "event": "provider_request_failed",
+        "shipment_id": "SHIP-4103",
+        "idempotency_key": "shipping-label:SHIP-4103",
+        "error_type": "PermanentError",
+        "outcome": "failure"
+      }
+    ],
+    "workflow_result": {
+      "status": "needs_review",
+      "attempts": 1,
+      "error_type": "PermanentError",
+      "label_id": null
+    }
+  },
+  {
+    "trace_id": "TRACE-004",
+    "scenario": "replay_safe_success",
+    "run_id": "RUN-49EB590DCE",
+    "shipment_id": "SHIP-4104",
+    "events": [
+      {
+        "timestamp": "2026-11-19T06:24:08.892200+00:00",
+        "component": "fake_shipping_provider",
+        "event": "provider_request_started",
+        "shipment_id": "SHIP-4104",
+        "idempotency_key": "shipping-label:SHIP-4104",
+        "call_number": 1
+      },
+      {
+        "timestamp": "2026-11-19T06:24:08.892217+00:00",
+        "component": "fake_shipping_provider",
+        "event": "provider_request_succeeded",
+        "shipment_id": "SHIP-4104",
+        "idempotency_key": "shipping-label:SHIP-4104",
+        "outcome": "success"
+      }
+    ],
+    "workflow_result": {
+      "status": "completed",
+      "attempts": 1,
+      "error_type": null,
+      "label_id": "LABEL-SHIP-4104"
+    }
+  }
+]

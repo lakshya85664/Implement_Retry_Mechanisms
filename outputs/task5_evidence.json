@@ -1,0 +1,236 @@
+{
+  "project": "Implement Retry Mechanisms",
+  "task": 5,
+  "success": {
+    "scenario": "success",
+    "result": {
+      "run_id": "RUN-93870CCA18",
+      "status": "completed",
+      "attempts": 1,
+      "idempotency_key": "shipping-label:SHIP-6001",
+      "label_id": "LABEL-SHIP-6001",
+      "error_type": null,
+      "message": "Shipping label created successfully",
+      "attempt_log": [
+        {
+          "attempt": 1,
+          "outcome": "success",
+          "error_type": null,
+          "backoff_seconds": 0
+        }
+      ],
+      "total_backoff_seconds": 0.0
+    },
+    "operator_action": "No action required. Confirm the label ID and continue downstream fulfilment."
+  },
+  "failure": {
+    "scenario": "retry_exhaustion",
+    "result": {
+      "run_id": "RUN-DEE0CC777F",
+      "status": "needs_review",
+      "attempts": 3,
+      "idempotency_key": "shipping-label:SHIP-6002",
+      "label_id": null,
+      "error_type": "RetryableError",
+      "message": "Provider unavailable after final attempt",
+      "attempt_log": [
+        {
+          "attempt": 1,
+          "outcome": "failure",
+          "error_type": "transient",
+          "error": "Temporary provider outage",
+          "backoff_seconds": 0.0,
+          "will_retry": true
+        },
+        {
+          "attempt": 2,
+          "outcome": "failure",
+          "error_type": "transient",
+          "error": "Provider still unavailable",
+          "backoff_seconds": 0.0,
+          "will_retry": true
+        },
+        {
+          "attempt": 3,
+          "outcome": "failure",
+          "error_type": "transient",
+          "error": "Provider unavailable after final attempt",
+          "backoff_seconds": 0.0,
+          "will_retry": false
+        }
+      ],
+      "total_backoff_seconds": 0.0
+    },
+    "provider_calls": 3,
+    "operator_action": "Stop automatic retries. Inspect provider availability and logs, verify the idempotency key, and investigate before authorizing another attempt."
+  },
+  "replay": {
+    "scenario": "duplicate_delivery_replay",
+    "first_label_id": "LABEL-SHIP-6003",
+    "replayed_label_id": "LABEL-SHIP-6003",
+    "same_label_returned": true,
+    "gateway_summary": {
+      "unique_labels_purchased": 1,
+      "duplicate_replays": 1,
+      "idempotency_records": 1
+    },
+    "operator_action": "Do not purchase another label. Reuse the original label and verify the shipment record."
+  },
+  "recovery": {
+    "timeout": {
+      "completed": false,
+      "error": "Operation exceeded timeout",
+      "elapsed_seconds": 0.0189,
+      "recovery": {
+        "status": "needs_review",
+        "next_action": "query_provider_by_idempotency_key",
+        "reason": "Timeout does not prove the provider did not create a label",
+        "safe_to_replay": true
+      },
+      "operator_action": "Query the provider using the original idempotency key. If a label exists, reconcile it. Replay only after confirming the provider's idempotency behavior."
+    },
+    "malformed_response": {
+      "status": "needs_review",
+      "next_action": "verify_provider_record_before_replay",
+      "reason": "Provider response was malformed",
+      "safe_to_replay": true,
+      "operator_action": "Verify whether the provider created a label despite the malformed response. Reconcile before replay."
+    }
+  },
+  "observability_metrics": {
+    "generated_at": "2026-11-19T06:33:24.201896+00:00",
+    "total_runs": 3,
+    "completed_runs": 2,
+    "failed_runs": 1,
+    "success_rate_percent": 66.67,
+    "failure_rate_percent": 33.33,
+    "total_attempts": 4,
+    "average_attempts_per_run": 1.33,
+    "average_latency_ms": 0.25,
+    "maximum_latency_ms": 0.383,
+    "state_counts": {
+      "completed": 2,
+      "needs_review": 1
+    },
+    "trace_count": 3,
+    "measurement_note": "Latency is measured locally and is not a production SLA. State counts represent final workflow states."
+  },
+  "observability_traces": [
+    {
+      "trace_id": "TRACE-001",
+      "scenario": "success",
+      "run_id": "RUN-B651BEC814",
+      "shipment_id": "SHIP-6101",
+      "events": [
+        {
+          "timestamp": "2026-11-19T06:33:24.181845+00:00",
+          "component": "fake_shipping_provider",
+          "event": "provider_request_started",
+          "shipment_id": "SHIP-6101",
+          "idempotency_key": "shipping-label:SHIP-6101",
+          "call_number": 1
+        },
+        {
+          "timestamp": "2026-11-19T06:33:24.181872+00:00",
+          "component": "fake_shipping_provider",
+          "event": "provider_request_succeeded",
+          "shipment_id": "SHIP-6101",
+          "idempotency_key": "shipping-label:SHIP-6101",
+          "outcome": "success"
+        }
+      ],
+      "workflow_result": {
+        "status": "completed",
+        "attempts": 1,
+        "error_type": null,
+        "label_id": "LABEL-SHIP-6101"
+      }
+    },
+    {
+      "trace_id": "TRACE-002",
+      "scenario": "retry_then_success",
+      "run_id": "RUN-833B01B633",
+      "shipment_id": "SHIP-6102",
+      "events": [
+        {
+          "timestamp": "2026-11-19T06:33:24.182023+00:00",
+          "component": "fake_shipping_provider",
+          "event": "provider_request_started",
+          "shipment_id": "SHIP-6102",
+          "idempotency_key": "shipping-label:SHIP-6102",
+          "call_number": 1
+        },
+        {
+          "timestamp": "2026-11-19T06:33:24.182040+00:00",
+          "component": "fake_shipping_provider",
+          "event": "provider_request_failed",
+          "shipment_id": "SHIP-6102",
+          "idempotency_key": "shipping-label:SHIP-6102",
+          "error_type": "RetryableError",
+          "outcome": "failure"
+        },
+        {
+          "timestamp": "2026-11-19T06:33:24.182124+00:00",
+          "component": "fake_shipping_provider",
+          "event": "provider_request_started",
+          "shipment_id": "SHIP-6102",
+          "idempotency_key": "shipping-label:SHIP-6102",
+          "call_number": 2
+        },
+        {
+          "timestamp": "2026-11-19T06:33:24.182140+00:00",
+          "component": "fake_shipping_provider",
+          "event": "provider_request_succeeded",
+          "shipment_id": "SHIP-6102",
+          "idempotency_key": "shipping-label:SHIP-6102",
+          "outcome": "success"
+        }
+      ],
+      "workflow_result": {
+        "status": "completed",
+        "attempts": 2,
+        "error_type": null,
+        "label_id": "LABEL-SHIP-6102"
+      }
+    },
+    {
+      "trace_id": "TRACE-003",
+      "scenario": "permanent_failure",
+      "run_id": "RUN-5BE262445D",
+      "shipment_id": "SHIP-6103",
+      "events": [
+        {
+          "timestamp": "2026-11-19T06:33:24.182262+00:00",
+          "component": "fake_shipping_provider",
+          "event": "provider_request_started",
+          "shipment_id": "SHIP-6103",
+          "idempotency_key": "shipping-label:SHIP-6103",
+          "call_number": 1
+        },
+        {
+          "timestamp": "2026-11-19T06:33:24.182278+00:00",
+          "component": "fake_shipping_provider",
+          "event": "provider_request_failed",
+          "shipment_id": "SHIP-6103",
+          "idempotency_key": "shipping-label:SHIP-6103",
+          "error_type": "PermanentError",
+          "outcome": "failure"
+        }
+      ],
+      "workflow_result": {
+        "status": "needs_review",
+        "attempts": 1,
+        "error_type": "PermanentError",
+        "label_id": null
+      }
+    }
+  ],
+  "operator_actions": {
+    "created": "Validate input and authorization",
+    "running": "Monitor active attempt",
+    "retrying": "Allow bounded retry policy",
+    "completed": "Verify label and continue fulfilment",
+    "needs_review": "Investigate and reconcile before replay",
+    "cancelled": "Verify cancellation and side effects"
+  }
+}
